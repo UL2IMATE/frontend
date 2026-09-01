@@ -10,11 +10,7 @@ type CanvasProps = {
   onLoadSuccess?: (numPages: number) => void;
 };
 
-export function Canvas({
-  pageNumber,
-  pdfUrl = "/sample.pdf",
-  onLoadSuccess,
-}: CanvasProps) {
+export function Canvas({ pageNumber, pdfUrl, onLoadSuccess }: CanvasProps) {
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +19,13 @@ export function Canvas({
 
   // 1. Load document
   useEffect(() => {
+    if (!pdfUrl) {
+      setPdfDoc(null);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     let isCancelled = false;
     setLoading(true);
     setError(null);
@@ -111,7 +114,13 @@ export function Canvas({
 
   return (
     <div className="flex flex-col items-center justify-center p-4">
-      {loading && (
+      {!pdfUrl && !loading && (
+        <div className="p-8 text-center text-gray-500">
+          <p className="font-semibold text-lg">No PDF selected</p>
+          <p className="text-sm">Please upload a PDF file to begin.</p>
+        </div>
+      )}
+      {loading && pdfUrl && (
         <p className="text-gray-600 font-medium">Loading PDF document...</p>
       )}
       {error && (
@@ -122,7 +131,7 @@ export function Canvas({
       <canvas
         ref={canvasRef}
         className={`shadow-lg border border-gray-300 rounded bg-white ${
-          loading || error ? "hidden" : "block"
+          !pdfUrl || loading || error ? "hidden" : "block"
         }`}
       />
     </div>
