@@ -29,13 +29,15 @@ export function App() {
         <Route
           path="/Editing"
           element={
-            <div className="min-h-screen bg-gray-100 flex flex-col items-center disabled:">
-              <Controls
-                pageNumber={pageNumber}
-                totalPages={totalPages}
-                handlePrevPage={handlePrevPage}
-                handleNextPage={handleNextPage}
-              />
+            <div className="min-h-screen bg-gray-100 flex flex-col items-center">
+              <header className="sticky top-0 z-30 w-full">
+                <Controls
+                  pageNumber={pageNumber}
+                  totalPages={totalPages}
+                  handlePrevPage={handlePrevPage}
+                  handleNextPage={handleNextPage}
+                />
+              </header>
               <main className="w-full flex-1 flex justify-center items-start p-6 overflow-auto">
                 <Canvas
                   pageNumber={pageNumber}
