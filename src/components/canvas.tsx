@@ -115,6 +115,7 @@ export function Canvas({ pageNumber, pdfUrl, onLoadSuccess }: CanvasProps) {
     };
   }, [pdfUrl, onLoadSuccess, navigate]);
 
+  // 3. Handle switching page annotations (ONLY runs when pageNumber changes)
   useEffect(() => {
     const fCanvas = fabricInstanceRef.current;
     if (!fCanvas) return;
@@ -133,10 +134,16 @@ export function Canvas({ pageNumber, pdfUrl, onLoadSuccess }: CanvasProps) {
         fCanvas.renderAll();
       });
     }
-  }, [pageNumber, scale]);
+  }, [pageNumber]);
 
   useEffect(() => {
-    if (!pdfDoc) return;
+    if (!pdfDoc) {
+      if (fabricInstanceRef.current) {
+        fabricInstanceRef.current.setZoom(scale);
+        fabricInstanceRef.current.renderAll();
+      }
+      return;
+    }
 
     const targetPage = Math.max(1, Math.min(pageNumber, pdfDoc.numPages));
 
